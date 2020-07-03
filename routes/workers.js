@@ -37,4 +37,58 @@ router.post('/add', auth.hasRole(), async function (req, res) {
     }
 });
 
+router.get('/list', auth.hasRole(), async function (req, res) {
+    let userId = req.user.user_id;
+    try {
+        let getWorkersList = `SELECT * FROM workers WHERE user_id = ${userId}`;
+        db.query(getWorkersList, (err, workersList) => {
+            if (err) {
+                console.log(err);
+                res.json({
+                    status: false,
+                    error: err,
+                });
+            } else {
+                res.json({
+                    status: true,
+                    result: workersList,
+                });
+            }
+        });
+    } catch (e) {
+        console.log(e);
+        res.json({
+            status: false,
+            error: e,
+        });
+    }
+});
+
+router.get('/counters', auth.hasRole(), async function (req, res) {
+    let userId = req.user.user_id;
+    try {
+        let getWorkersList = `SELECT * FROM workers WHERE user_id = ${userId}`;
+        db.query(getWorkersList, (err, workersList) => {
+            if (err) {
+                console.log(err);
+                res.json({
+                    status: false,
+                    error: err,
+                });
+            } else {
+                res.json({
+                    status: true,
+                    labour: workersList.length,
+                });
+            }
+        });
+    } catch (e) {
+        console.log(e);
+        res.json({
+            status: false,
+            error: e,
+        });
+    }
+});
+
 module.exports = router;
