@@ -40,4 +40,20 @@ router.post('/add', auth.hasRole(), async (req, res) => {
     }
 });
 
+router.post('/list', auth.hasRole(), async (req, res) => {
+    let userId = req.user.user_id;
+    let workerId = req.body.workerId;
+
+    try {
+        let query = ``;
+
+    } catch (e) {
+        console.log(e);
+        res.json({
+            status: false,
+            error: e,
+        });
+    }
+});
+
 export default router;
