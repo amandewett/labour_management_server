@@ -10,6 +10,7 @@ let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let workersRouter = require('./routes/workers');
 let attendanceRouter = require('./routes/attendance');
+let paymentRouter = require('./routes/payments');
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -50,6 +51,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/workers', workersRouter);
 app.use('/attendance', attendanceRouter);
+app.use('/payments', paymentRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
