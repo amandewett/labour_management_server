@@ -91,52 +91,6 @@ router.get("/counters", auth.hasRole(), async function (req, res) {
   }
 });
 
-router.post("/markAttendance", auth.hasRole(), async function (req, res) {
-  let userId = req.user.user_id;
-  let workerId = req.body.workerId;
-  let attendance = req.body.attendance;
-  let date = req.body.date;
 
-  try {
-    let workerAttendance = {
-      user_id: userId,
-      worker_id: workerId,
-      attendance: attendance,
-      date: formatDate(date),
-    };
-    let markAttendance = `REPLACE INTO attendance SET ?`;
-    db.query(markAttendance, workerAttendance, async function (
-      err,
-      attendanceMarked
-    ) {
-      if (err) {
-        console.log("1", err);
-        res.json({
-          status: false,
-          error: err,
-        });
-      } else {
-        res.json({
-          status: true,
-          message: "Success",
-        });
-      }
-    });
-  } catch (e) {
-    console.log("catch", e);
-    res.json({
-      status: false,
-      error: e,
-    });
-  }
-});
-
-function formatDate(unixTimestamp) {
-  let timestamp = new Date(unixTimestamp);
-  let date = timestamp.getDate();
-  let month = timestamp.getMonth() + 1;
-  let year = timestamp.getFullYear();
-  return `${year}-${month}-${date}`;
-}
 
 module.exports = router;

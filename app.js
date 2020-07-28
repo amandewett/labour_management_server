@@ -9,6 +9,7 @@ require("body-parser");
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let workersRouter = require('./routes/workers');
+let attendanceRouter = require('./routes/attendance');
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -48,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/workers', workersRouter);
+app.use('/attendance', attendanceRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
