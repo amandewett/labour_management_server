@@ -45,8 +45,21 @@ router.post('/list', auth.hasRole(), async (req, res) => {
     let workerId = req.body.workerId;
 
     try {
-        let query = ``;
-
+        let query = `SELECT * FROM payments WHERE user_id = ${userId} AND worker_id = ${workerId}`;
+        db.query(query, async (err, result) => {
+            if (err) {
+                console.log(err);
+                res.json({
+                    status: false,
+                    error: err,
+                });
+            } else {
+                res.json({
+                    status: true,
+                    result: result,
+                });
+            }
+        });
     } catch (e) {
         console.log(e);
         res.json({
