@@ -24,7 +24,7 @@ db.connect((err) => {
     throw err;
   } else {
     global.db = db;
-    console.log(`Server started with ${process.env.ENV} enviroment at port: ${process.env.PORT}`);
+    console.log(`Server started with ${process.env.ENV} environment at port: ${process.env.PORT}`);
   }
 });
 
