@@ -1,6 +1,7 @@
 let express = require("express");
 let router = express.Router();
 let auth = require("../middleware/auth");
+let async = require('async');
 
 router.post("/add", auth.hasRole(), async function (req, res) {
   let userId = req.user.user_id;
@@ -66,8 +67,12 @@ router.get("/list", auth.hasRole(), async function (req, res) {
 
 router.get("/counters", auth.hasRole(), async function (req, res) {
   let userId = req.user.user_id;
+  let totalAmount = 0;
   try {
     let getWorkersList = `SELECT * FROM workers WHERE user_id = ${userId}`;
+    let getTotalAmountPaid = `SELECT * FROM payments WHERE user_id = ${userId}`;
+    let getTodayAttendance = `SELECT * FROM attendance WHERE attendance = 'Present' AND DATE(date) = CURDATE()`;
+    //get total workers
     db.query(getWorkersList, (err, workersList) => {
       if (err) {
         console.log(err);
@@ -76,10 +81,48 @@ router.get("/counters", auth.hasRole(), async function (req, res) {
           error: err,
         });
       } else {
-        res.json({
-          status: true,
-          labour: workersList.length,
+        //Get total amount paid
+        db.query(getTotalAmountPaid, (err, totalPayments) => {
+          if (err) {
+            console.log(err);
+            res.json({
+              status: false,
+              error: err,
+            });
+          } else {
+            async.each(totalPayments, (payment, callback) => {
+              totalAmount = totalAmount + payment.amount;
+              callback();
+            }, (err) => {
+              if (err) {
+                console.log(err);
+                res.json({
+                  status: false,
+                  error: err,
+                });
+              } else {
+                //get total present today
+                db.query(getTodayAttendance, (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    res.json({
+                      status: false,
+                      error: err,
+                    });
+                  } else {
+                    res.json({
+                      status: true,
+                      labour: workersList.length,
+                      amount: totalAmount,
+                      attendance: result.length,
+                    });
+                  }
+                });
+              }
+            });
+          }
         });
+
       }
     });
   } catch (e) {
